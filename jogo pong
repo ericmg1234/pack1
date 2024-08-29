@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pong</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+
+    canvas {
+        display: block;
+        background-color: #000;
+    }
+
+    .score {
+        color: white;
+        font-size: 30px;
+        position: absolute;
+        left: 50%;
+        top: 10px;
+        transform: translateX(-50%);
+    }
+</style>
+</head>
+<body>
+<canvas id="pongCanvas" width="800" height="400"></canvas>
+<div class="score" id="score">0 - 0</div>
+
+<script>
+    // Obtendo referência para o canvas e contexto
+    const canvas = document.getElementById("pongCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Definindo as propriedades das barras
+    let paddleWidth = 10;
+    let paddleHeight = 80;
+    let paddleSpeed = 5;
+    let leftPaddleY = canvas.height / 2 - paddleHeight / 2;
+    let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
+
+    // Definindo as propriedades da bola
+    let ballSize = 10;
+    let ballX = canvas.width / 2;
+    let ballY = canvas.height / 2;
+    let ballSpeedX = 5;
+    let ballSpeedY = 5;
+
+    // Definindo as pontuações
+    let leftScore = 0;
+    let rightScore = 0;
+
+    // Função para desenhar as barras
+    function drawPaddles() {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
+        ctx.fillRect(canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
+    }
+
+    // Função para desenhar a bola
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ballX, ballY, ballSize, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // Função para atualizar a posição da bola
+    function updateBall() {
+        ballX += ballSpeedX;
+        ballY += ballSpeedY;
+
+        // Verificar colisão com as barras
+        if (ballX - ballSize < paddleWidth && ballY > leftPaddleY && ballY < leftPaddleY + paddleHeight) {
+            ballSpeedX = -ballSpeedX;
+        }
+        if (ballX + ballSize > canvas.width - paddleWidth && ballY > rightPaddleY && ballY < rightPaddleY + paddleHeight) {
+            ballSpeedX = -ballSpeedX;
+        }
+
+        // Verificar colisão com as bordas superior e inferior
+        if (ballY - ballSize < 0 || ballY + ballSize > canvas.height) {
+            ballSpeedY = -ballSpeedY;
+        }
+
+        // Verificar se a bola saiu pela lateral
+        if (ballX - ballSize < 0) {
+            rightScore++;
+            resetBall();
+        }
+        if (ballX + ballSize > canvas.width) {
+            leftScore++;
+            resetBall();
+        }
+    }
+
+    // Função para resetar a posição da bola
+    function resetBall() {
+        ballX = canvas.width / 2;
+        ballY = canvas.height / 2;
+        ballSpeedX = -ballSpeedX;
+        ballSpeedY = Math.random() < 0.5 ? -5 : 5;
+    }
+
+    // Função para atualizar as posições das barras
+    function updatePaddles() {
+        // Movimentar a barra esquerda
+        if (leftPaddleY > 0 && leftPaddleY + paddleHeight < canvas.height) {
+            if (keys.w) {
+                leftPaddleY -= paddleSpeed;
+            }
+            if (keys.s) {
+                leftPaddleY += paddleSpeed;
+            }
+        }
+
+        // Movimentar a barra direita
+        if (rightPaddleY > 0 && rightPaddleY + paddleHeight < canvas.height) {
+            if (keys.ArrowUp) {
+                rightPaddleY -= paddleSpeed;
+            }
+            if (keys.ArrowDown) {
+                rightPaddleY += paddleSpeed;
+            }
+        }
+    }
+
+    // Função para desenhar e atualizar o jogo
+    function draw() {
+        // Limpar o canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Desenhar as barras
+        drawPaddles();
+
+        // Desenhar a bola
+        drawBall();
+
+        // Atualizar a posição da bola
+        updateBall();
+
+        // Atualizar as posições das barras
+        updatePaddles();
+
+        // Atualizar a pontuação
+        document.getElementById("score").textContent = `${leftScore} - ${rightScore}`;
+
+        // Chamar novamente a função draw() após um intervalo
+        requestAnimationFrame(draw);
+    }
+
+    // Objeto para armazenar o estado das teclas pressionadas
+    let keys = {};
+
+    // Event listeners para as teclas pressionadas
+    window.addEventListener("keydown", function(event) {
+        keys[event.key] = true;
+    });
+    window.addEventListener("keyup", function(event) {
+        keys[event.key] = false;
+    });
+
+    // Iniciar o jogo chamando a função draw()
+    draw();
+</script>
+</body>
+sss</html>
