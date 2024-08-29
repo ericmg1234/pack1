@@ -1,0 +1,104 @@
+let player;
+let bullets = [];
+let targets = [];
+let bulletSpeed = 5;
+let targetSpeed = 2;
+let targetInterval = 60;
+let lastTargetTime = 0;
+
+function setup() {
+  createCanvas(800, 600);
+  
+  // Configuração do jogador
+  player = {
+    x: width / 2,
+    y: height - 50,
+    width: 50,
+    height: 20,
+    speed: 5
+  };
+}
+
+function draw() {
+  background(0);
+  
+  // Desenho do jogador
+  fill(255);
+  rect(player.x, player.y, player.width, player.height);
+  
+  // Movimento do jogador
+  if (keyIsDown(LEFT_ARROW)) {
+    player.x -= player.speed;
+  }
+  if (keyIsDown(RIGHT_ARROW)) {
+    player.x += player.speed;
+  }
+  
+  // Garante que o jogador não saia da tela
+  player.x = constrain(player.x, 0, width - player.width);
+  
+  // Desenho e movimentação das balas
+  fill(255, 0, 0);
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    let bullet = bullets[i];
+    bullet.y -= bulletSpeed;
+    rect(bullet.x, bullet.y, bullet.width, bullet.height);
+    
+    // Remove balas que saíram da tela
+    if (bullet.y < 0) {
+      bullets.splice(i, 1);
+    }
+  }
+  
+  // Adiciona novos alvos
+  if (millis() - lastTargetTime > targetInterval) {
+    lastTargetTime = millis();
+    let target = {
+      x: random(width - 40),
+      y: 0,
+      width: 40,
+      height: 20
+    };
+    targets.push(target);
+  }
+  
+  // Desenho e movimentação dos alvos
+  fill(0, 255, 0);
+  for (let i = targets.length - 1; i >= 0; i--) {
+    let target = targets[i];
+    target.y += targetSpeed;
+    rect(target.x, target.y, target.width, target.height);
+    
+    // Verifica colisões entre balas e alvos
+    for (let j = bullets.length - 1; j >= 0; j--) {
+      let bullet = bullets[j];
+      if (bullet.x < target.x + target.width &&
+          bullet.x + bullet.width > target.x &&
+          bullet.y < target.y + target.height &&
+          bullet.y + bullet.height > target.y) {
+        // Remove alvo e bala em caso de colisão
+        targets.splice(i, 1);
+        bullets.splice(j, 1);
+        break;
+      }
+    }
+    
+    // Remove alvos que saíram da tela
+    if (target.y > height) {
+      targets.splice(i, 1);
+    }
+  }
+}
+
+function keyPressed() {
+  // Atira quando a tecla de espaço é pressionada
+  if (key === ' ') {
+    let bullet = {
+      x: player.x + player.width / 2 - 5,
+      y: player.y,
+      width: 10,
+      height: 20
+    };
+    bullets.push(bullet);
+  }
+}
