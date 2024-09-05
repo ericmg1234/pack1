@@ -1,0 +1,156 @@
+let spaceship;
+let invaders = [];
+let bullets = [];
+let invaderSpeed = 1;
+let bulletSpeed = 5;
+let spaceshipSpeed = 5;
+let invaderSize = 40;
+let bulletSize = 10;
+let gameOver = false;
+
+function setup() {
+  createCanvas(800, 600);
+  spaceship = new Spaceship();
+  for (let i = 0; i < 6; i++) {
+    for (let j = 0; j < 5; j++) {
+      invaders.push(new Invader(i * (invaderSize + 10) + 50, j * (invaderSize + 10) + 50));
+    }
+  }
+}
+
+function draw() {
+  background(0);
+  
+  if (gameOver) {
+    textSize(32);
+    fill(255, 0, 0);
+    text('Game Over', width / 2 - 80, height / 2);
+    return;
+  }
+  
+  spaceship.show();
+  spaceship.move();
+
+  for (let bullet of bullets) {
+    bullet.show();
+    bullet.move();
+    for (let i = invaders.length - 1; i >= 0; i--) {
+      if (bullet.hits(invaders[i])) {
+        invaders.splice(i, 1);
+        bullets.splice(bullets.indexOf(bullet), 1);
+        break;
+      }
+    }
+    if (bullet.offscreen()) {
+      bullets.splice(bullets.indexOf(bullet), 1);
+    }
+  }
+
+  for (let invader of invaders) {
+    invader.show();
+    invader.move();
+    if (invader.y > height - 50) {
+      gameOver = true;
+    }
+  }
+  
+  if (invaders.length === 0) {
+    noLoop(); // Stop the game if all invaders are destroyed
+    textSize(32);
+    fill(0, 255, 0);
+    text('You Win!', width / 2 - 70, height / 2);
+  }
+}
+
+function keyPressed() {
+  if (key === ' ') {
+    bullets.push(new Bullet(spaceship.x + spaceship.width / 2, spaceship.y));
+  }
+  if (keyCode === LEFT_ARROW) {
+    spaceship.setDirection(-1);
+  } else if (keyCode === RIGHT_ARROW) {
+    spaceship.setDirection(1);
+  }
+}
+
+function keyReleased() {
+  if (keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
+    spaceship.setDirection(0);
+  }
+}
+
+class Spaceship {
+  constructor() {
+    this.width = 60;
+    this.height = 20;
+    this.x = width / 2 - this.width / 2;
+    this.y = height - this.height - 10;
+    this.xdir = 0;
+  }
+
+  show() {
+    fill(255);
+    noStroke();
+    rect(this.x, this.y, this.width, this.height);
+  }
+
+  move() {
+    this.x += this.xdir * spaceshipSpeed;
+    this.x = constrain(this.x, 0, width - this.width);
+  }
+
+  setDirection(dir) {
+    this.xdir = dir;
+  }
+}
+
+class Invader {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = invaderSize;
+  }
+
+  show() {
+    fill(255, 0, 0);
+    noStroke();
+    rect(this.x, this.y, this.size, this.size);
+  }
+
+  move() {
+    this.x += invaderSpeed;
+    if (this.x > width - this.size || this.x < 0) {
+      invaderSpeed *= -1;
+      this.y += this.size;
+    }
+  }
+}
+
+class Bullet {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = bulletSize;
+  }
+
+  show() {
+    fill(0, 255, 0);
+    noStroke();
+    rect(this.x, this.y, this.size, this.size);
+  }
+
+  move() {
+    this.y -= bulletSpeed;
+  }
+
+  offscreen() {
+    return this.y < 0;
+  }
+
+  hits(invader) {
+    return this.x < invader.x + invader.size &&
+           this.x + this.size > invader.x &&
+           this.y < invader.y + invader.size &&
+           this.y + this.size > invader.y;
+  }
+}
