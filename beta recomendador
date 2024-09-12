@@ -1,0 +1,123 @@
+let genre = 'comedy'; // Gênero padrão
+let ageRating = 'TODAS'; // Faixa etária padrão
+let classification = 'QUALQUER'; // Classificação padrão
+let recommendation = '';
+
+function setup() {
+  createCanvas(800, 600);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+
+  // Adiciona botões para seleção de gênero
+  createButton('Comédia').position(20, 60).mousePressed(() => setGenre('comedy'));
+  createButton('Aventura').position(20, 100).mousePressed(() => setGenre('adventure'));
+  createButton('Ação').position(20, 140).mousePressed(() => setGenre('action'));
+  createButton('Drama').position(20, 180).mousePressed(() => setGenre('drama'));
+
+  // Adiciona botões para seleção de faixa etária
+  createButton('Todas as Idades').position(150, 60).mousePressed(() => setAgeRating('All'));
+  createButton('12 Anos').position(150, 100).mousePressed(() => setAgeRating('12'));
+  createButton('16 Anos').position(150, 140).mousePressed(() => setAgeRating('16'));
+  createButton('18 Anos').position(150, 180).mousePressed(() => setAgeRating('18'));
+
+  // Adiciona botões para seleção de classificação
+  createButton('Qualquer').position(300, 60).mousePressed(() => setClassification('Any'));
+  createButton('Popular').position(300, 100).mousePressed(() => setClassification('Popular'));
+  createButton('Crítica').position(300, 140).mousePressed(() => setClassification('Critic'));
+
+  // Adiciona um botão para obter uma recomendação
+  createButton('Obter Recomendação').position(300, 180).mousePressed(() => getRecommendation());
+
+  // Inicializa a recomendação
+  getRecommendation();
+}
+
+function draw() {
+  background(220);
+  
+  // Exibe o gênero, faixa etária e a recomendação
+  text(`Gênero Selecionado: ${genre}`, width / 2, 50);
+  text(`Faixa Etária: ${ageRating}`, width / 2, 80);
+  text(`Classificação: ${classification}`, width / 2, 110);
+  text(`Recomendação: ${recommendation}`, width / 2, height / 2);
+}
+
+function setGenre(selectedGenre) {
+  genre = selectedGenre;
+  getRecommendation();
+}
+
+function setAgeRating(selectedAgeRating) {
+  ageRating = selectedAgeRating;
+  getRecommendation();
+}
+
+function setClassification(selectedClassification) {
+  classification = selectedClassification;
+  getRecommendation();
+}
+
+function getRecommendation() {
+  let recommendations = {
+    comedy: [
+      { title: "Veep", rating: "18", classification: "Critic" },
+      { title: "Silicon Valley", rating: "16", classification: "Popular" },
+      { title: "Curb Your Enthusiasm", rating: "18", classification: "Critic" },
+      { title: "", rating: "12", classification: "Popular" },
+      { title: "Brooklyn 99", rating: "12", classification: "Popular" },
+      { title: "The Office", rating: "12", classification: "Popular" },
+      { title: "Parks and Recreation", rating: "12", classification: "Popular" },
+      { title: "Arrested Development", rating: "16", classification: "Critic" },
+      { title: "Scrubs", rating: "12", classification: "Popular" },
+      { title: "The Big Bang Theory", rating: "12", classification: "Popular" }
+    ],
+    adventure: [
+      { title: "Harry Potter E A PEDRA FILOSOFAL", rating: "All", classification: "Popular" },
+      { title: "Matrix", rating: "16", classification: "Popular" },
+      { title: "QUEBRANDO REGRAS", rating: "16", classification: "Popular" },
+      { title: "Mad Max: ESTRADA DA FÚRIA", rating: "18", classification: "Popular" },
+      { title: "Jurassic Park", rating: "12", classification: "Popular" },
+      { title: "Avatar", rating: "12", classification: "Popular" },
+      { title: "PiRATAS DO CARIBE", rating: "12", classification: "Popular" },
+      { title: "O Hobbit", rating: "12", classification: "Popular" },
+      { title: "Jumanji", rating: "All", classification: "Popular" },
+      { title: "The Chronicles of Narnia: The Lion, the Witch and the Wardrobe", rating: "All", classification: "Popular" }
+    ],
+    action: [
+      { title: "HOMENS DE PRETO", rating: "12", classification: "Popular" },
+      { title: "HOMEM ARANHA", rating: "12", classification: "Popular" },
+      { title: "Jumanji", rating: "All", classification: "Popular" },
+      { title: "007 Casino Royale", rating: "16", classification: "Popular" },
+      { title: "BATMAN CAVALEIRO DAS TREVAS", rating: "16", classification: "Popular" },
+      { title: "Mad Max: ESTRADA DA FURIA", rating: "18", classification: "Popular" },
+      { title: "John Wick", rating: "18", classification: "Popular" },
+      { title: "DURO DE MATAR", rating: "18", classification: "Popular" },
+      { title: "MISSÃO IMPOSSIVEL", rating: "16", classification: "Popular" },
+      { title: "SCARFACE", rating: "16", classification: "Popular" }
+    ],
+    drama: [
+      { title: "SEXTA FEIRA 13", rating: "18", classification: "Critic" },
+      { title: "SHREK", rating: "12", classification: "Critic" },
+      { title: "O RESGATE DO SOLDADO RYAN", rating: "18", classification: "Critic" },
+      { title: "E.T. O EXTRATERRESTRE", rating: "All", classification: "Popular" },
+      { title: "TUBARÃO", rating: "16", classification: "Critic" },
+      { title: "Forrest Gump", rating: "12", classification: "Popular" },
+      { title: "O PODEROSO CHEFÃO", rating: "18", classification: "Critic" },
+      { title: "DE VOLTA PARA O FUTURO", rating: "12", classification: "Critic" },
+      { title: "VELOZES E FURIOSOS", rating: "12", classification: "Popular" },
+      { title: "DIVERTIDAMENTE", rating: "12", classification: "Critic" }
+    ]
+  };
+
+  let filteredRecommendations = recommendations[genre].filter(movie => 
+    (ageRating === 'All' || movie.rating === ageRating) &&
+    (classification === 'Any' || movie.classification === classification)
+  );
+
+  if (filteredRecommendations.length > 0) {
+    let movie = filteredRecommendations[Math.floor(Math.random() * filteredRecommendations.length)];
+    recommendation = movie.title;
+  } else {
+    recommendation = 'Nenhuma recomendação disponível';
+  }
+}
