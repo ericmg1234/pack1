@@ -96,16 +96,16 @@ function getRecommendation() {
       { title: "SCARFACE", rating: "16", classification: "Popular" }
     ],
     drama: [
-      { title: "SEXTA FEIRA 13", rating: "18", classification: "Critic" },
-      { title: "SHREK", rating: "12", classification: "Critic" },
+      { title: "Kill: O Massacre no Trem", rating: "18", classification: "Critic" },
+      { title: "Tipos de Gentileza", rating: "12", classification: "Critic" },
       { title: "O RESGATE DO SOLDADO RYAN", rating: "18", classification: "Critic" },
-      { title: "E.T. O EXTRATERRESTRE", rating: "All", classification: "Popular" },
-      { title: "TUBARÃO", rating: "16", classification: "Critic" },
+      { title: "E.T. O EXTRATERRESTRE", rating: "16", classification: "Popular" },
+      { title: "Ainda Estou Aqui ", rating: "16", classification: "Critic" },
       { title: "Forrest Gump", rating: "12", classification: "Popular" },
       { title: "O PODEROSO CHEFÃO", rating: "18", classification: "Critic" },
-      { title: "DE VOLTA PARA O FUTURO", rating: "12", classification: "Critic" },
-      { title: "VELOZES E FURIOSOS", rating: "12", classification: "Popular" },
-      { title: "DIVERTIDAMENTE", rating: "12", classification: "Critic" }
+      { title: "O Pior Vizinho do Mundo", rating: "12", classification: "Critic" },
+      { title: "Um Lugar Silencioso: Dia Um", rating: "12", classification: "Popular" },
+      { title: "Som da Liberdade", rating: "12", classification: "Critic" }
     ]
   };
 
